@@ -10,7 +10,8 @@
   <h1>URL로 데이터 공유 (LZString 사용)</h1>
   <textarea id="myTextarea" rows="5" cols="30" placeholder="Type something..."></textarea>
   <br>
-  <button id="saveButton">Save</button>
+  <button id="saveButton">저장</button>
+  <button id="copyUrl">주소복사</button>
 
   <script>
     // 저장 버튼 클릭 시 데이터 URL에 압축 저장
@@ -29,6 +30,19 @@
       const decompressedValue = LZString.decompressFromEncodedURIComponent(compressedValue); // 압축 해제
       document.getElementById("myTextarea").value = decompressedValue; // 복원된 데이터 출력
     }
+
+    // URL 복사 기능
+    const copyUrl = document.querySelector('#copyUrl');
+    copyUrl.addEventListener('click', async () => {
+      try {
+        // 현재 URL 복사
+        await navigator.clipboard.writeText(window.location.href);
+        alert('URL이 복사되었습니다!');
+      } catch (err) {
+        console.error('URL 복사 중 오류 발생:', err);
+        alert('URL 복사에 실패했습니다.');
+      }
+    });
   </script>
 </body>
 </html>
