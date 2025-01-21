@@ -3,40 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LocalStorage Example</title>
+  <title>URL Data Sharing</title>
 </head>
 <body>
-  <h1>LocalStorage를 활용한 데이터 저장</h1>
+  <h1>URL로 데이터 공유</h1>
   <textarea id="myTextarea" rows="5" cols="30" placeholder="Type something..."></textarea>
   <br>
   <button id="saveButton">Save</button>
-  <button id="clearButton">Clear</button>
 
   <script>
-    // DOM 요소 가져오기
-    const textarea = document.getElementById("myTextarea");
-    const saveButton = document.getElementById("saveButton");
-    const clearButton = document.getElementById("clearButton");
+    // 저장 버튼 클릭 시 데이터 URL에 저장
+    document.getElementById("saveButton").addEventListener("click", () => {
+      const textareaValue = document.getElementById("myTextarea").value;
+      const encodedValue = encodeURIComponent(textareaValue); // URL에 안전하게 인코딩
+      const newUrl = `${window.location.origin}${window.location.pathname}?text=${encodedValue}`;
+      window.history.replaceState(null, "", newUrl); // URL 업데이트
+      alert(`URL이 업데이트되었습니다: ${newUrl}`);
+    });
 
-    // 1. 페이지 로드 시 LocalStorage에서 데이터 복원
-    const savedContent = localStorage.getItem("textareaContent");
-    if (savedContent) {
-      textarea.value = savedContent; // 저장된 내용 복원
+    // URL에서 데이터 복원
+    const params = new URLSearchParams(window.location.search);
+    if (params.has("text")) {
+      const savedText = decodeURIComponent(params.get("text"));
+      document.getElementById("myTextarea").value = savedText;
     }
-
-    // 2. 저장 버튼 클릭 시 LocalStorage에 데이터 저장
-    saveButton.addEventListener("click", () => {
-      const content = textarea.value;
-      localStorage.setItem("textareaContent", content); // 데이터 저장
-      alert("Content saved to LocalStorage!");
-    });
-
-    // 3. 초기화 버튼 클릭 시 LocalStorage에서 데이터 삭제
-    clearButton.addEventListener("click", () => {
-      localStorage.removeItem("textareaContent"); // 데이터 삭제
-      textarea.value = ""; // 텍스트 초기화
-      alert("Content cleared from LocalStorage!");
-    });
   </script>
 </body>
 </html>
