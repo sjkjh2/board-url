@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Save to Fragment</title>
+</head>
+<body>
+  <textarea id="myTextarea" rows="5" cols="30" placeholder="Type something..."></textarea>
+  <button id="saveButton">Save</button>
+  
+  <script>
+    document.getElementById("saveButton").addEventListener("click", () => {
+      const textareaValue = document.getElementById("myTextarea").value;
+      const encodedValue = encodeURIComponent(textareaValue); // URL 안전하게 인코딩
+      window.location.hash = `#text=${encodedValue}`; // 프래그먼트 업데이트
+      alert("Saved to URL fragment!");
+    });
+
+    // URL에서 값을 읽어와 textarea에 복원
+    const hash = window.location.hash;
+    if (hash.startsWith("#text=")) {
+      const decodedValue = decodeURIComponent(hash.slice(6));
+      document.getElementById("myTextarea").value = decodedValue;
+    }
+  </script>
+</body>
+</html>
