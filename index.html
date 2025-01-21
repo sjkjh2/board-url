@@ -3,29 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>URL Data Sharing</title>
+  <title>URL Data Sharing with LZString</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.4.4/lz-string.min.js"></script>
 </head>
 <body>
-  <h1>URL로 데이터 공유</h1>
+  <h1>URL로 데이터 공유 (LZString 사용)</h1>
   <textarea id="myTextarea" rows="5" cols="30" placeholder="Type something..."></textarea>
   <br>
   <button id="saveButton">Save</button>
 
   <script>
-    // 저장 버튼 클릭 시 데이터 URL에 저장
+    // 저장 버튼 클릭 시 데이터 URL에 압축 저장
     document.getElementById("saveButton").addEventListener("click", () => {
       const textareaValue = document.getElementById("myTextarea").value;
-      const encodedValue = encodeURIComponent(textareaValue); // URL에 안전하게 인코딩
-      const newUrl = `${window.location.origin}${window.location.pathname}?text=${encodedValue}`;
+      const compressedValue = LZString.compressToEncodedURIComponent(textareaValue); // 압축 및 URL-safe 변환
+      const newUrl = `${window.location.origin}${window.location.pathname}?text=${compressedValue}`;
       window.history.replaceState(null, "", newUrl); // URL 업데이트
-      alert(`URL이 업데이트되었습니다: ${newUrl}`);
+      alert(`압축된 데이터가 URL에 저장되었습니다: ${newUrl}`);
     });
 
     // URL에서 데이터 복원
     const params = new URLSearchParams(window.location.search);
     if (params.has("text")) {
-      const savedText = decodeURIComponent(params.get("text"));
-      document.getElementById("myTextarea").value = savedText;
+      const compressedValue = params.get("text"); // 압축된 데이터 가져오기
+      const decompressedValue = LZString.decompressFromEncodedURIComponent(compressedValue); // 압축 해제
+      document.getElementById("myTextarea").value = decompressedValue; // 복원된 데이터 출력
     }
   </script>
 </body>
